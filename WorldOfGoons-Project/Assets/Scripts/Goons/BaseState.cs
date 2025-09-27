@@ -9,6 +9,10 @@ public abstract class BaseState<EState> where EState : Enum
         StateKey = _key;
         NextState = _key;
     }
+
+    public void SetNextState(EState _key) {
+        NextState = _key;
+    }
     
     public EState StateKey { get; private set; }
     

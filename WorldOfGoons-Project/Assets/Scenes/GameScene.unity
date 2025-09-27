@@ -296,29 +296,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &529355342 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8048341551944213399, guid: 4848d9c5a813a474897f5e2893633421, type: 3}
-  m_PrefabInstance: {fileID: 1929785569}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &529355345 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 6729023016267673832, guid: 4848d9c5a813a474897f5e2893633421, type: 3}
-  m_PrefabInstance: {fileID: 1929785569}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &529355347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529355342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 488ae8c727bacd145beebac8a45dd4be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  goonSpriteRenderer: {fileID: 529355345}
 --- !u!1 &568809573
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,6 +509,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursor: {fileID: 1235553926913311227, guid: 15791feaf6ba64d40934c50e116987d7, type: 3}
   cursorParent: {fileID: 129176776}
+--- !u!1 &893219033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 893219034}
+  m_Layer: 0
+  m_Name: TempLinksParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &893219034
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893219033}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.9145243, y: -1.4473412, z: 0.07005214}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &928657762
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,8 +549,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 928657763}
-  - component: {fileID: 928657764}
   - component: {fileID: 928657765}
+  - component: {fileID: 928657764}
   - component: {fileID: 928657766}
   m_Layer: 0
   m_Name: GoonManager
@@ -582,6 +590,8 @@ MonoBehaviour:
   currentHoveredGoon: {fileID: 0}
   goonSelectorRadius: 0.2
   currentDraggedGoon: {fileID: 0}
+  tempLinkToInstantiate: {fileID: 2325321325903772978, guid: 9f1842b6965fa9048ad67750015c0f26, type: 3}
+  tempLinkParent: {fileID: 893219034}
 --- !u!114 &928657765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -856,14 +866,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Goon (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2492851130989193759, guid: 4848d9c5a813a474897f5e2893633421, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8048341551944213399, guid: 4848d9c5a813a474897f5e2893633421, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 529355347}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4848d9c5a813a474897f5e2893633421, type: 3}
 --- !u!1001 &1451120335445132591
 PrefabInstance:
@@ -938,3 +944,4 @@ SceneRoots:
   - {fileID: 1929785569}
   - {fileID: 1013018102}
   - {fileID: 129176776}
+  - {fileID: 893219034}

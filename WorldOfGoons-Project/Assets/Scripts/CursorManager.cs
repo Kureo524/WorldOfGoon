@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CursorManager : MonoBehaviour {
@@ -7,6 +8,10 @@ public class CursorManager : MonoBehaviour {
     public Transform cursorParent;
     
     private GameObject _currentCursor;
+    private LineRenderer _lineRenderer;
+    
+    private int _count = 0;
+    private List<Vector2> _delayedVectors = new();
 
     private void Awake() {
         Instance = this;
@@ -16,10 +21,19 @@ public class CursorManager : MonoBehaviour {
             (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition),
             Quaternion.identity,
             cursorParent);
+        _lineRenderer = _currentCursor.GetComponent<LineRenderer>();
     }
 
     private void Update() {
         _currentCursor.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        _delayedVectors.Add(_currentCursor.transform.position);
+        if (_delayedVectors.Count > 60) {
+            _delayedVectors.RemoveAt(0);
+        }
+
+        for (int i = _lineRenderer.positionCount - 1; i >= 0 ; i--) {
+            _lineRenderer.SetPosition(i, _delayedVectors.Count > i ? _delayedVectors[i] : _delayedVectors[^1]);
+        }
     }
     
     public void ChangeCursor(GameObject newCursor) {

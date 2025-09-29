@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class Point : MonoBehaviour {
+public class TutoPoint : MonoBehaviour {
     public bool runtime = true;
     public Vector2 pointId;
-    public List<Bar> connectedBars;
+    public List<TutoBar> connectedBars;
 
     private void Start() {
         if (runtime == false) {

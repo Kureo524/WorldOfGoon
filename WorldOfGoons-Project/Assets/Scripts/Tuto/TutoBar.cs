@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bar : MonoBehaviour
+public class TutoBar : MonoBehaviour
 {
     public float maxLenght;
     public Vector2 startPosition;

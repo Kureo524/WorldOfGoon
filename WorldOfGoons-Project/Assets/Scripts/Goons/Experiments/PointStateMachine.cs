@@ -31,8 +31,7 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
         _context.OnInstantiateLink.AddListener(CreateLink);
     }
 
-    private void Start()
-    {
+    private void Start() {
         GameController.Instance.onClick.AddListener(SetIsClicked);
     }
 

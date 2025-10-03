@@ -2,14 +2,16 @@ using System;
 using UnityEngine;
 
 public class Link : MonoBehaviour {
-    public Vector2 startPosition;
+    public PointStateMachine startPoint;
+    public PointStateMachine endPoint;
     public SpriteRenderer linkSpriteRenderer;
 
     public bool isPhysic;
 
-    public void UpdateCreatingLink(Vector2 toPosition) {
-        transform.position = (toPosition + startPosition) / 2;
-        Vector2 dir = toPosition - startPosition;
+    public void UpdateCreatingLink(PointStateMachine toPoint) {
+        endPoint = toPoint;
+        transform.position = (toPoint.transform.position + startPoint.transform.position) / 2;
+        Vector2 dir = toPoint.transform.position - startPoint.transform.position;
         float angle = Vector2.SignedAngle(Vector2.right, dir);
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -25,5 +27,9 @@ public class Link : MonoBehaviour {
     public void DestroySelf() {
         Debug.Log("DestroySelf");
         Destroy(gameObject);
+    }
+
+    public void DestroyLinkInEditor() {
+        DestroyImmediate(gameObject);
     }
 }

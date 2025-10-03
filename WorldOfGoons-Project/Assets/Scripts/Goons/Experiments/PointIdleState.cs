@@ -8,7 +8,6 @@ public class PointIdleState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered PointIdleState");
         NextState = StateKey;
         _context.MousePosHit = null;
     }

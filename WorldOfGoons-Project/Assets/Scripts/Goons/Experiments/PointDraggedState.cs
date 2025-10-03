@@ -8,7 +8,6 @@ public class PointDraggedState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered pointDraggedState");
         NextState = StateKey;
     }
 

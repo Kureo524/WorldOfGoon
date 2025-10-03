@@ -24,8 +24,7 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
         Placed,
     }
 
-    private void Awake()
-    {
+    private void Awake() {
         _context = new PointContext(gameObject, dragRadius, dragLerpSpeed, linkToInstantiate, mouseHoverRadius);
         InitializeStates();
         _context.OnInstantiateLink.AddListener(CreateLink);
@@ -33,11 +32,8 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
 
     private void Start() {
         GameController.Instance.onClick.AddListener(SetIsClicked);
-    }
-
-    public void UpdateCurrentState(PointStates newState)
-    {
-        TransitionToState(newState);
+        // if(CurrentState.StateKey == PointStates.Placed)
+        //     InitializeConnections();
     }
 
     private void SetIsClicked(bool isPressed)
@@ -64,10 +60,15 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
         return CurrentState.StateKey;
     }
 
-    private void CreateLink()
-    {
+    private void CreateLink() {
         _context.CurrentDraggingLink = Instantiate(linkToInstantiate, linkParent).GetComponent<Link>();
-        _context.CurrentDraggingLink.GetComponent<Link>().startPosition = transform.position;
+        _context.CurrentDraggingLink.GetComponent<Link>().startPoint = this;
+    }
+    
+    private Link GiveCreateLink() {
+        Link link = Instantiate(linkToInstantiate, linkParent).GetComponent<Link>();
+        link.startPoint = this;
+        return link;
     }
 
     public void AddLink(Link link) {
@@ -75,7 +76,58 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
             _context.Links.Add(link);
         }
     }
+    
+    public void InitializeConnections()
+    {
+        // Récupère tous les points voisins dans le rayon
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            _context.PointObject.transform.position,
+            _context.DragRadius,
+            LayerMask.GetMask("GoonMachine"));
+    
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.gameObject == gameObject) continue; // ignore soi-même
+    
+            // Vérifie si c'est un Point valide
+            if (!hit.TryGetComponent(out PointStateMachine otherPoint)) continue;
+            if (otherPoint.GetCurrentState() != PointStates.Placed) continue;
+    
+            // Vérifie si un lien existe déjà entre "this" et "otherPoint"
+            if (LinkExists(this, otherPoint)) continue;
+    
+            // Crée le lien
+            Link newLink = GiveCreateLink();
+            if (newLink != null)
+            {
+                newLink.UpdateCreatingLink(otherPoint);
+    
+                AddLink(newLink);
+                otherPoint.AddLink(newLink);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Vérifie si un lien existe déjà entre deux points
+    /// </summary>
+    private bool LinkExists(PointStateMachine a, PointStateMachine b)
+    {
+        foreach (Link link in _context.Links)
+        {
+            if ((link.startPoint == a && link.endPoint == b) ||
+                (link.startPoint == b && link.endPoint == a))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public void UpdateState(PointStates newState) {
+        TransitionToState(newState);
+    }
+    
     public void UpdateConnections(PointStateMachine sender, bool isConnected) {
         if (HasConnections.ContainsKey(sender)) {
             HasConnections[sender] = isConnected;
@@ -92,5 +144,11 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
         States.Add(PointStates.Dragged, new PointDraggedState(PointStates.Dragged, _context));
         States.Add(PointStates.Placed, new PointPlacedState(PointStates.Placed, _context));
         CurrentState = States[startingState];
+    }
+
+
+
+    public void SetMouseHover(bool isHover) {
+        Debug.Log("Hover : " + isHover);
     }
 }

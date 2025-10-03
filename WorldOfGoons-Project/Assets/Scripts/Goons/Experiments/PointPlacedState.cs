@@ -12,7 +12,6 @@ public class PointPlacedState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered PointPlacedState");
         NextState = StateKey;
         _context.CurrentDraggingLink = null;
     }
@@ -54,7 +53,7 @@ public class PointPlacedState : BaseState<PointStateMachine.PointStates> {
                     }
 
                     if (!_context.CurrentDraggingLink) _context.OnInstantiateLink.Invoke();
-                    else _context.CurrentDraggingLink.GetComponent<Link>().UpdateCreatingLink(hit.transform.position);
+                    else _context.CurrentDraggingLink.GetComponent<Link>().UpdateCreatingLink(_point);
                 }
             }
         }

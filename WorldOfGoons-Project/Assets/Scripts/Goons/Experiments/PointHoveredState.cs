@@ -8,7 +8,6 @@ public class PointHoveredState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered PointHoveredState");
         NextState = StateKey;
         _context.PointObject.GetComponent<SpriteRenderer>().color = Color.blue;
     }

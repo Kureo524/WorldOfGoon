@@ -17,4 +17,9 @@ public class GameController : MonoBehaviour {
     public void OnEscape(InputValue value) {
         onEscape.Invoke(); 
     }
+
+    public UnityEvent<Vector2> onMouseMove;
+    public void OnMousePosition(InputValue value) {
+        onMouseMove.Invoke(value.Get<Vector2>());
+    }
 }

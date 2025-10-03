@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+    using System.Collections.Generic;
 using UnityEngine;
 
 public class CursorManager : MonoBehaviour {
@@ -36,7 +36,7 @@ public class CursorManager : MonoBehaviour {
         }
     }
     
-    public void ChangeCursor(GameObject newCursor) {
+    public void ChangeCursor(GameObject newCursor) {    
         cursor = newCursor;
     }
 

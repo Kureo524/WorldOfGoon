@@ -6,6 +6,15 @@
             "id": "3d61c772-01c5-417b-a638-774827078caf",
             "actions": [
                 {
+                    "name": "MousePosition",
+                    "type": "Value",
+                    "id": "e1e241af-7813-45ad-a0cb-590d81fd9e39",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Click",
                     "type": "PassThrough",
                     "id": "6f65acf1-455f-4400-b1dd-2aac3f4ad8f2",
@@ -44,6 +53,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b67b776c-7ebb-434b-b56f-89c8c0348595",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePosition",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

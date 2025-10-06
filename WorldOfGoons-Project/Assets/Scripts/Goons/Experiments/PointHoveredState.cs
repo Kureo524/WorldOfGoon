@@ -8,22 +8,20 @@ public class PointHoveredState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered PointHoveredState");
         NextState = StateKey;
-        _context.PointObject.GetComponent<SpriteRenderer>().color = Color.blue;
+        _context.Self.GetComponent<SpriteRenderer>().color = Color.blue;
     }
 
     public override void ExitState() {
-        _context.PointObject.GetComponent<SpriteRenderer>().color = Color.white;
-        _context.MousePosHit = null;
     }
 
     public override void UpdateState() {
-        _context.MousePosHit = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition),
-            _context.MouseHoverRadius, LayerMask.GetMask("GoonMachine"));
-        
-        if(!_context.MousePosHit || _context.MousePosHit.gameObject != _context.PointObject) {
+        if (!_context.IsMouseHover) {
             NextState = PointStateMachine.PointStates.Idle;
+        }
+
+        if (_context.IsClicked) {
+            NextState = PointStateMachine.PointStates.Dragged;
         }
     }
 

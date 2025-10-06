@@ -8,7 +8,6 @@ public class PointFlyingState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered PointFlyingState");
         NextState = StateKey;
     }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+    using System.Collections.Generic;
 using UnityEngine;
 
 public class CursorManager : MonoBehaviour {
@@ -24,7 +24,7 @@ public class CursorManager : MonoBehaviour {
         _lineRenderer = _currentCursor.GetComponent<LineRenderer>();
     }
 
-    private void Update() {
+    private void FixedUpdate() {
         _currentCursor.transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _delayedVectors.Add(_currentCursor.transform.position);
         if (_delayedVectors.Count > 60) {
@@ -36,7 +36,7 @@ public class CursorManager : MonoBehaviour {
         }
     }
     
-    public void ChangeCursor(GameObject newCursor) {
+    public void ChangeCursor(GameObject newCursor) {    
         cursor = newCursor;
     }
 

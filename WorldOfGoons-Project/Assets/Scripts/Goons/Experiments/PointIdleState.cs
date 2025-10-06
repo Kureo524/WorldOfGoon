@@ -8,9 +8,8 @@ public class PointIdleState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void EnterState() {
-        Debug.Log("Entered PointIdleState");
         NextState = StateKey;
-        _context.MousePosHit = null;
+        _context.Self.GetComponent<SpriteRenderer>().color = Color.black;
     }
 
     public override void ExitState() {
@@ -18,10 +17,7 @@ public class PointIdleState : BaseState<PointStateMachine.PointStates> {
     }
 
     public override void UpdateState() {
-        _context.MousePosHit = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition),
-            _context.MouseHoverRadius, LayerMask.GetMask("GoonMachine"));
-
-        if(_context.MousePosHit && _context.MousePosHit.gameObject == _context.PointObject) {
+        if (_context.IsMouseHover) {
             NextState = PointStateMachine.PointStates.Hover;
         }
     }

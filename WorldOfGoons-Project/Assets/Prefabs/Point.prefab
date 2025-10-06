@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2131649070820503385}
   - component: {fileID: 7647828953719902479}
-  - component: {fileID: 7913361934700930244}
   - component: {fileID: 5076064689980196952}
+  - component: {fileID: 7913361934700930244}
+  - component: {fileID: -2154573798748170396}
   m_Layer: 6
   m_Name: Point
   m_TagString: Untagged
@@ -29,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.02, y: -1.92, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -79,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -89,6 +90,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5076064689980196952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4945878606098152024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af28c23c09b7b049b2149551bc83d60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingState: 0
+  dragLerpSpeed: 10
+  gravityEffect: 9.8
+  dragRadius: 3
+  goonsLayerMask: GoonMachine
+  linkToInstantiate: {fileID: 6456361624015734533, guid: 2d656c1bd2950ac468acde64b44a7111, type: 3}
+  linkParent: {fileID: 0}
+  linkColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!58 &7913361934700930244
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -99,7 +120,7 @@ CircleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c04dc1e8e62f1a645abaa6bb8b449ce0, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -125,21 +146,30 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
---- !u!114 &5076064689980196952
-MonoBehaviour:
+--- !u!50 &-2154573798748170396
+Rigidbody2D:
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4945878606098152024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5af28c23c09b7b049b2149551bc83d60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingState: 0
-  mouseHoverRadius: 0.2
-  dragRadius: 5
-  dragLerpSpeed: 10
-  linkToInstantiate: {fileID: 6456361624015734533, guid: 2d656c1bd2950ac468acde64b44a7111, type: 3}
-  linkParent: {fileID: 0}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

@@ -1,60 +1,151 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class PointContext {
-    public GameObject PointObject;
-    public float DraggedLerpSpeed;
-    public float MouseHoverRadius;
-
-    public float DragRadius;
-    public List<Link> Links = new();
-    public Link CurrentDraggingLink;
-    public UnityEvent OnInstantiateLink = new ();
-
-    public Collider2D MousePosHit;
-    
-    public PointContext(GameObject pointObject, float dragRadius, float draggedLerpSpeed, GameObject linkToInstantiate, float mouseHoverRadius) {
-        PointObject = pointObject;
-        DragRadius = dragRadius;
+    public PointContext(PointStateMachine self, string goonsLayerMask, float draggedRadius, float draggedLerpSpeed, float gravityEffect,
+        GameObject linkToInstantiate, Transform linksParent) {
+        Self = self;
+        Body = Self.GetComponent<Rigidbody2D>(); 
+        
+        GoonsLayerMask = LayerMask.GetMask(goonsLayerMask);
+        DraggedRadius = draggedRadius;
         DraggedLerpSpeed = draggedLerpSpeed;
-        MouseHoverRadius = mouseHoverRadius;
-        Self = PointObject.GetComponent<PointStateMachine>();
+        GravityEffect = gravityEffect;
+        
+        _linkToInstantiate = linkToInstantiate;
+        _linksParent = linksParent;
     }
 
-
+    #region Random Variables
 
     public PointStateMachine Self;
+    public Rigidbody2D Body;
+    
+    public float DraggedLerpSpeed;
+    public float GravityEffect;
+    public Vector2 MousePosition;
+
+    public bool IsMouseHover;
+    public bool IsClicked;
+    
+    #endregion
+
+    #region Checks
+    
+    public int GoonsLayerMask;
+    public float DraggedRadius;
+    
     public Collider2D[] GetInRangeGoons(Vector2 position, float radius, int layerMask) {
         return Physics2D.OverlapCircleAll(position, radius, layerMask);
     }
     public Collider2D GetClosestGoons(Vector2 position, float radius, int layerMask) {
         return Physics2D.OverlapCircle(position, radius, layerMask);
     }
+    
+    #endregion
 
+    #region Links
+    
     private Link _tempLink;
+    private Dictionary<PointStateMachine , Link> _links = new();
     private GameObject _linkToInstantiate;
     private Transform _linksParent;
-    public void CreateLink() {
-        _tempLink = Object.Instantiate(_linkToInstantiate, _linksParent).GetComponent<Link>();
-        _tempLink.startPoint = Self;
+    
+    public Link CreateLink(PointStateMachine otherPoint) {
+        if (_links.ContainsKey(otherPoint)) {
+            Debug.Log("Link already exists");
+            return null;
+        }
+        
+        Link tempLink = Object.Instantiate(_linkToInstantiate, _linksParent).GetComponent<Link>();
+        tempLink.InitializeValues(Self, otherPoint);
+        tempLink.UpdatePosition();
+        AddLink(otherPoint, tempLink);
+        return tempLink;
     }
-    public void DestroyTempLink() {
-        _tempLink.DestroySelf();
-        _tempLink = null;
+    public void AddLink(PointStateMachine otherPoint, Link link) {
+        _links.TryAdd(otherPoint, link);
+    }
+    public void RemoveLink(PointStateMachine otherPoint) {
+        if(_links.ContainsKey(otherPoint))
+            _links.Remove(otherPoint);
     }
 
-    private List<Link> _links;
-    public void AddLinkToList(Link link) {
-        _links.Add(link);
+    public void ClearLinks() {
+        _links.Clear();
     }
-    public bool IsLinkInList(Link link) {
-        return _links.Contains(link);
+    public int GetLinksAmount() {
+        return _links.Count;
     }
-    public void RemoveAllLinks() {
-        for (int i = _links.Count - 1; i >= 0; i--) {
-            _links[i].DestroySelf();
+    public void DestroyTempLink(PointStateMachine connectedPoint) {
+        Object.Destroy(_links[connectedPoint]);
+    }
+    public void UpdateTempLinkPositions() {
+        foreach (Link link in _links.Values) {
+            Debug.Log(link);
+            link.UpdatePosition();
         }
     }
+    public bool IsPointConnected(PointStateMachine connectedPoint) {
+        return _links.ContainsKey(connectedPoint);
+    }
+    public List<PointStateMachine> GetConnectedPoints(Collider2D[] pointColliders) {
+        List<PointStateMachine> connectedPoints = new();
+        foreach (Collider2D pointCollider in pointColliders) {
+            pointCollider.gameObject.TryGetComponent<PointStateMachine>(out PointStateMachine point);
+            if(point == Self) continue;
+            connectedPoints.Add(point);
+        }
+        return connectedPoints;
+    }
+    public List<PointStateMachine> GetLinksToRemove(List<PointStateMachine> otherPoints) {
+        List<PointStateMachine> linksToRemove = new();
+        foreach (PointStateMachine point in _links.Keys) {
+            if(otherPoints.Contains(point))
+                continue;
+            linksToRemove.Add(point);
+        }
+        return linksToRemove;
+    }
+    public void RemoveLinks(List<PointStateMachine> linksToRemove) {
+        if (linksToRemove.Count == 0) return;
+        for (int i = linksToRemove.Count - 1; i >= 0; i--) {
+            Object.Destroy(_links[linksToRemove[i]].gameObject);
+            _links.Remove(linksToRemove[i]);
+        }
+    }
+
+    private Dictionary<PointStateMachine, SpringJoint2D> _joints = new();
+    public void SetLinksToPoints() {
+        foreach (PointStateMachine point in _links.Keys) {
+            point.AddLink(Self, _links[point]);
+            if (!_joints.ContainsKey(point) && !point.IsJointInPoint(Self)) {
+                SpringJoint2D joint = Self.AddComponent<SpringJoint2D>();
+                joint.connectedBody = point.GetComponent<Rigidbody2D>();
+                _joints.Add(point, joint);
+            }
+        }
+    }
+    public void RemoveAllLinks() {
+        foreach (PointStateMachine point in _links.Keys) {
+            if (_joints.ContainsKey(point)) {
+                RemoveJoint(point);
+            } else {
+                point.RemoveJoint(Self);
+            }
+        }
+    }
+    public void RemoveJoint(PointStateMachine point) {
+        if (_joints.ContainsKey(point)) {
+            Object.Destroy(_joints[point]);
+            _joints.Remove(point);
+        }
+    }
+
+    public bool IsJointInPoint(PointStateMachine point) {
+        return _joints.ContainsKey(point);
+    }
+    
+    #endregion
 }

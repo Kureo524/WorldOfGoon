@@ -7,13 +7,24 @@ public class GoonsCursorController : MonoBehaviour {
     public float checkRadius;
 
     public PointStateMachine currentHoveredGoon;
+    private bool _isGoonDragged;
+    
+    private Vector2 _mousePos;
     
     private void Start() {
         GameController.Instance.onMouseMove.AddListener(TakeMousePosition);
+        GameController.Instance.onClick.AddListener(TakeClick);
     }
 
     private void TakeMousePosition(Vector2 onScreenPosition) {
-        PointStateMachine currentGoon = GetClosestGoon<PointStateMachine>(Camera.main.ScreenToWorldPoint(onScreenPosition), LayerMask.GetMask(goonLayer));;
+        _mousePos = Camera.main.ScreenToWorldPoint(onScreenPosition);
+        
+        if (_isGoonDragged) {
+            currentHoveredGoon.SetMousePosition(_mousePos);
+            return;
+        }
+        
+        PointStateMachine currentGoon = GetClosestGoon<PointStateMachine>(_mousePos, LayerMask.GetMask(goonLayer));;
         if (currentGoon != currentHoveredGoon) {
             if(currentHoveredGoon)
                 currentHoveredGoon.SetMouseHover(false);
@@ -21,6 +32,13 @@ public class GoonsCursorController : MonoBehaviour {
                 currentGoon.SetMouseHover(true);
             currentHoveredGoon = currentGoon;
         }
+    }
+
+    private void TakeClick(bool clicked) {
+        if (!currentHoveredGoon) return;
+        currentHoveredGoon.SetMousePosition(_mousePos);
+        currentHoveredGoon.SetClicked(clicked);
+        _isGoonDragged = clicked;
     }
 
     private T GetClosestGoon<T>(Vector2 mousePos, int layerMask) where T : Component {

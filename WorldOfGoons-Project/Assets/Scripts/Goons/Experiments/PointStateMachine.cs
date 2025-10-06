@@ -1,20 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PointStateMachine : StateManager<PointStateMachine.PointStates>
-{
-    private PointContext _context;
-
-    [Header("Starting Values")] public PointStates startingState;
-    public float mouseHoverRadius;
-
-    [Header("Drag Values")] public float dragRadius;
-    public float dragLerpSpeed;
-    public GameObject linkToInstantiate;
-    public Transform linkParent;
-
-    public Dictionary<PointStateMachine, bool> HasConnections = new();
-
+public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
     public enum PointStates
     {
         Idle,
@@ -25,119 +11,70 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
     }
 
     private void Awake() {
-        _context = new PointContext(gameObject, dragRadius, dragLerpSpeed, linkToInstantiate, mouseHoverRadius);
+        _context = new PointContext(this, goonsLayerMask, dragRadius, dragLerpSpeed, gravityEffect,
+            linkToInstantiate, linkParent);
         InitializeStates();
-        _context.OnInstantiateLink.AddListener(CreateLink);
     }
 
     private void Start() {
-        GameController.Instance.onClick.AddListener(SetIsClicked);
-        // if(CurrentState.StateKey == PointStates.Placed)
-        //     InitializeConnections();
+         if(CurrentState.StateKey == PointStates.Placed)
+             InitializeConnections();
     }
-
-    private void SetIsClicked(bool isPressed)
-    {
-        if (isPressed && CurrentState.StateKey == PointStates.Hover) {
-            CurrentState.SetNextState(PointStates.Dragged);
-        }
-        else if (!isPressed && CurrentState.StateKey == PointStates.Dragged) {
-            foreach (bool hasConnection in HasConnections.Values) {
-                if (hasConnection) {
-                    CurrentState.SetNextState(PointStates.Placed);
-                    return;
-                }
-            }
-            CurrentState.SetNextState(PointStates.Idle);
-        } else if (isPressed && CurrentState.StateKey == PointStates.Placed && _context.MousePosHit &&
-                   _context.MousePosHit.gameObject == _context.PointObject) {
-            CurrentState.SetNextState(PointStates.Dragged);
-        }
-    }
-
+    
     public PointStates GetCurrentState()
     {
         return CurrentState.StateKey;
     }
-
-    private void CreateLink() {
-        _context.CurrentDraggingLink = Instantiate(linkToInstantiate, linkParent).GetComponent<Link>();
-        _context.CurrentDraggingLink.GetComponent<Link>().startPoint = this;
-    }
     
-    private Link GiveCreateLink() {
-        Link link = Instantiate(linkToInstantiate, linkParent).GetComponent<Link>();
-        link.startPoint = this;
-        return link;
-    }
-
-    public void AddLink(Link link) {
-        if (!_context.Links.Contains(link)) {
-            _context.Links.Add(link);
-        }
-    }
+    #region Variables
     
-    public void InitializeConnections()
-    {
-        // Récupère tous les points voisins dans le rayon
+    private PointContext _context;
+
+    [Header("Starting Values")] 
+    public PointStates startingState;
+
+    [Header("Drag Values")] 
+    public float dragLerpSpeed;
+    public float gravityEffect;
+    
+    [Header("Checks Values")] 
+    public float dragRadius;
+    public string goonsLayerMask;
+    
+    [Header("Link Values")] 
+    public GameObject linkToInstantiate;
+    public Transform linkParent;
+    public Color linkColor;
+    int segments = 60;
+    
+    #endregion
+    
+    #region Initialization Methods
+    public void InitializeConnections() {
         Collider2D[] hits = Physics2D.OverlapCircleAll(
-            _context.PointObject.transform.position,
-            _context.DragRadius,
+            transform.position,
+            dragRadius,
             LayerMask.GetMask("GoonMachine"));
     
         foreach (Collider2D hit in hits)
         {
-            if (hit.gameObject == gameObject) continue; // ignore soi-même
+            if (hit.gameObject == gameObject) continue;
     
-            // Vérifie si c'est un Point valide
             if (!hit.TryGetComponent(out PointStateMachine otherPoint)) continue;
             if (otherPoint.GetCurrentState() != PointStates.Placed) continue;
     
-            // Vérifie si un lien existe déjà entre "this" et "otherPoint"
-            if (LinkExists(this, otherPoint)) continue;
+            if (LinkExists(otherPoint)) continue;
     
-            // Crée le lien
-            Link newLink = GiveCreateLink();
-            if (newLink != null)
-            {
-                newLink.UpdateCreatingLink(otherPoint);
-    
-                AddLink(newLink);
-                otherPoint.AddLink(newLink);
-            }
+            otherPoint.AddLink(this, _context.CreateLink(otherPoint));
+            _context.SetLinksToPoints();
         }
     }
     
-    /// <summary>
-    /// Vérifie si un lien existe déjà entre deux points
-    /// </summary>
-    private bool LinkExists(PointStateMachine a, PointStateMachine b)
-    {
-        foreach (Link link in _context.Links)
-        {
-            if ((link.startPoint == a && link.endPoint == b) ||
-                (link.startPoint == b && link.endPoint == a))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void UpdateState(PointStates newState) {
-        TransitionToState(newState);
+    private bool LinkExists(PointStateMachine otherPoint) {
+        return _context.IsPointConnected(otherPoint);
     }
     
-    public void UpdateConnections(PointStateMachine sender, bool isConnected) {
-        if (HasConnections.ContainsKey(sender)) {
-            HasConnections[sender] = isConnected;
-        } else {
-            HasConnections.Add(sender, isConnected);
-        }
-    }
-
-    private void InitializeStates()
-    {
+    private void InitializeStates() {
         States.Add(PointStates.Idle, new PointIdleState(PointStates.Idle, _context));
         States.Add(PointStates.Flying, new PointFlyingState(PointStates.Flying, _context));
         States.Add(PointStates.Hover, new PointHoveredState(PointStates.Hover, _context));
@@ -145,10 +82,32 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates>
         States.Add(PointStates.Placed, new PointPlacedState(PointStates.Placed, _context));
         CurrentState = States[startingState];
     }
+    #endregion
 
-
+    public void AddLink(PointStateMachine point, Link link) {
+        _context.AddLink(point, link);
+    }
+    public void RemoveLink(PointStateMachine point) {
+        _context.RemoveLink(point);
+    }
+    public void RemoveJoint(PointStateMachine point) {
+        _context.RemoveJoint(point);
+    }
 
     public void SetMouseHover(bool isHover) {
         Debug.Log("Hover : " + isHover);
+        _context.IsMouseHover = isHover;
+    }
+
+    public void SetMousePosition(Vector2 position) {
+        _context.MousePosition = position;
+    }
+
+    public void SetClicked(bool isClicked) {
+        _context.IsClicked = isClicked;
+    }
+
+    public bool IsJointInPoint(PointStateMachine point) {
+        return _context.IsJointInPoint(point);
     }
 }

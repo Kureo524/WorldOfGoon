@@ -9,7 +9,6 @@ public class PointIdleState : BaseState<PointStateMachine.PointStates> {
 
     public override void EnterState() {
         NextState = StateKey;
-        _context.Self.GetComponent<SpriteRenderer>().color = Color.black;
     }
 
     public override void ExitState() {

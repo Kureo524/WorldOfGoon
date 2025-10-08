@@ -14,7 +14,6 @@ public class PointPlacedState : BaseState<PointStateMachine.PointStates> {
     public override void EnterState() {
         NextState = StateKey;
         _context.SetLinksToPoints();
-        _context.Self.GetComponent<SpriteRenderer>().color = Color.black;
     }
 
     public override void ExitState() {

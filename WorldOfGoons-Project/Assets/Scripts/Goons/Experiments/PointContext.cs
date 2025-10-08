@@ -54,7 +54,6 @@ public class PointContext {
     
     public Link CreateLink(PointStateMachine otherPoint) {
         if (_links.ContainsKey(otherPoint)) {
-            Debug.Log("Link already exists");
             return null;
         }
         
@@ -79,13 +78,22 @@ public class PointContext {
         return _links.Count;
     }
     public void DestroyTempLink(PointStateMachine connectedPoint) {
-        Object.Destroy(_links[connectedPoint]);
+        Object.Destroy(_links[connectedPoint].gameObject);
     }
     public void UpdateTempLinkPositions() {
+        List<PointStateMachine> pointsToRemove = new List<PointStateMachine>();
         foreach (Link link in _links.Values) {
-            Debug.Log(link);
-            link.UpdatePosition();
+            if (link != null) {
+                link.UpdatePosition();
+            }else {
+                foreach (PointStateMachine point in _links.Keys) {
+                    if (_links[point] == null) {
+                        pointsToRemove.Add(point);
+                    }
+                }
+            }
         }
+        RemoveLinks(pointsToRemove);
     }
     public bool IsPointConnected(PointStateMachine connectedPoint) {
         return _links.ContainsKey(connectedPoint);
@@ -111,7 +119,8 @@ public class PointContext {
     public void RemoveLinks(List<PointStateMachine> linksToRemove) {
         if (linksToRemove.Count == 0) return;
         for (int i = linksToRemove.Count - 1; i >= 0; i--) {
-            Object.Destroy(_links[linksToRemove[i]].gameObject);
+            if(_links[linksToRemove[i]] != null)
+                Object.Destroy(_links[linksToRemove[i]].gameObject);
             _links.Remove(linksToRemove[i]);
         }
     }
@@ -123,6 +132,8 @@ public class PointContext {
             if (!_joints.ContainsKey(point) && !point.IsJointInPoint(Self)) {
                 SpringJoint2D joint = Self.AddComponent<SpringJoint2D>();
                 joint.connectedBody = point.GetComponent<Rigidbody2D>();
+                joint.dampingRatio = 1;
+                joint.frequency = 25;
                 _joints.Add(point, joint);
             }
         }

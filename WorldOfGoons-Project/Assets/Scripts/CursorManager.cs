@@ -14,6 +14,7 @@ public class CursorManager : MonoBehaviour {
     private List<Vector2> _delayedVectors = new();
 
     private void Awake() {
+        Cursor.lockState = CursorLockMode.Confined;
         Instance = this;
         Cursor.visible = false;
         _currentCursor = Instantiate(

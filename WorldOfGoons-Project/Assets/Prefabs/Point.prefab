@@ -79,8 +79,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -2793473262014407664, guid: c9702c2cd3debf242a2d66d3661fc087, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -103,13 +103,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingState: 0
-  dragLerpSpeed: 10
+  dragLerpSpeed: 20
   gravityEffect: 9.8
   dragRadius: 3
   goonsLayerMask: GoonMachine
   linkToInstantiate: {fileID: 6456361624015734533, guid: 2d656c1bd2950ac468acde64b44a7111, type: 3}
   linkParent: {fileID: 0}
-  linkColor: {r: 0, g: 0, b: 0, a: 1}
+  linkColor: {r: 1, g: 0.6831587, b: 0, a: 1}
 --- !u!58 &7913361934700930244
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -168,7 +168,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0

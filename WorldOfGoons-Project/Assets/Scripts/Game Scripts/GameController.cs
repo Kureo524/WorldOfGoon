@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour {
     }
 
     public UnityEvent<bool> onClick;
-    public void OnClick(InputValue value) {
+    public void OnClick(InputValue value) { 
         onClick.Invoke(value.isPressed);
     }
     

@@ -8,10 +8,12 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
         Hover,
         Dragged,
         Placed,
+        Sliding,
     }
 
     private void Awake() {
         _context = new PointContext(this, goonsLayerMask, dragRadius, dragLerpSpeed, gravityEffect,
+            flyingCheckRadius, linkLayerMask, beeIdleSpeed, slidingSpeed,
             linkToInstantiate, linkParent);
         InitializeStates();
     }
@@ -30,6 +32,9 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
     
     private PointContext _context;
 
+    public float beeIdleSpeed;
+    public float slidingSpeed;
+
     [Header("Starting Values")] 
     public PointStates startingState;
 
@@ -39,7 +44,9 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
     
     [Header("Checks Values")] 
     public float dragRadius;
+    public float flyingCheckRadius;
     public string goonsLayerMask;
+    public string linkLayerMask;
     
     [Header("Link Values")] 
     public GameObject linkToInstantiate;
@@ -74,12 +81,13 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
         return _context.IsPointConnected(otherPoint);
     }
     
-    private void InitializeStates() {
+    public virtual void InitializeStates() {
         States.Add(PointStates.Idle, new PointIdleState(PointStates.Idle, _context));
         States.Add(PointStates.Flying, new PointFlyingState(PointStates.Flying, _context));
         States.Add(PointStates.Hover, new PointHoveredState(PointStates.Hover, _context));
         States.Add(PointStates.Dragged, new PointDraggedState(PointStates.Dragged, _context));
         States.Add(PointStates.Placed, new PointPlacedState(PointStates.Placed, _context));
+        States.Add(PointStates.Sliding, new PointSlidingState(PointStates.Sliding, _context));
         CurrentState = States[startingState];
     }
     #endregion
@@ -109,5 +117,9 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
 
     public bool IsJointInPoint(PointStateMachine point) {
         return _context.IsJointInPoint(point);
+    }
+
+    public PointStateMachine GetRandomConnectedPoint() {
+        return _context.GetRandomConnectedPoint();
     }
 }

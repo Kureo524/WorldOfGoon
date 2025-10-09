@@ -11,6 +11,7 @@ public class PointDraggedState : BaseState<PointStateMachine.PointStates> {
     public override void EnterState() {
         NextState = StateKey;
         _context.Body.bodyType = RigidbodyType2D.Kinematic;
+        _context.ResetGoon = true;
     }
 
     public override void ExitState() {
@@ -38,7 +39,7 @@ public class PointDraggedState : BaseState<PointStateMachine.PointStates> {
         _context.UpdateTempLinkPositions();
 
         if (!_context.IsClicked) {
-            NextState = _context.GetLinksAmount() != 0 ? PointStateMachine.PointStates.Placed : PointStateMachine.PointStates.Idle;
+            NextState = _context.GetLinksAmount() != 0 ? PointStateMachine.PointStates.Placed : PointStateMachine.PointStates.Flying;
         }
     }
 

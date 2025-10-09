@@ -3,7 +3,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class PointContext {
-    public PointContext(PointStateMachine self, string goonsLayerMask, float draggedRadius, float draggedLerpSpeed, float gravityEffect,
+    public PointContext(PointStateMachine self, string goonsLayerMask, float draggedRadius, float draggedLerpSpeed,
+        float gravityEffect, float flyingRadiusDetection, string linkMask, float beeIdleSpeed, float slidingSpeed,
         GameObject linkToInstantiate, Transform linksParent) {
         Self = self;
         Body = Self.GetComponent<Rigidbody2D>(); 
@@ -11,7 +12,11 @@ public class PointContext {
         GoonsLayerMask = LayerMask.GetMask(goonsLayerMask);
         DraggedRadius = draggedRadius;
         DraggedLerpSpeed = draggedLerpSpeed;
+        BeeIdleSpeed = beeIdleSpeed;
+        SlidingSpeed = slidingSpeed;
         GravityEffect = gravityEffect;
+        FlyingRadiusDetection = flyingRadiusDetection;
+        LinkMask = LayerMask.GetMask(linkMask);
         
         _linkToInstantiate = linkToInstantiate;
         _linksParent = linksParent;
@@ -23,11 +28,17 @@ public class PointContext {
     public Rigidbody2D Body;
     
     public float DraggedLerpSpeed;
+    public float BeeIdleSpeed;
+    public float SlidingSpeed;
     public float GravityEffect;
     public Vector2 MousePosition;
+    
+    public int LinkMask;
+    public float FlyingRadiusDetection;
 
     public bool IsMouseHover;
     public bool IsClicked;
+    public bool ResetGoon;
     
     #endregion
 
@@ -73,6 +84,16 @@ public class PointContext {
 
     public void ClearLinks() {
         _links.Clear();
+    }
+    public PointStateMachine GetRandomConnectedPoint() {
+        int temp = Random.Range(0, _links.Count);
+        int index = 0;
+        foreach (PointStateMachine link in _links.Keys) {
+            if (temp == index) {
+                return link;
+            }
+        }
+        return null;
     }
     public int GetLinksAmount() {
         return _links.Count;
@@ -159,4 +180,43 @@ public class PointContext {
     }
     
     #endregion
+
+    public float GoToGoon(PointStateMachine point, float speed) {
+        if (!point) return -1;
+        Body.position = Vector2.MoveTowards(Body.transform.position, point.transform.position, speed * Time.deltaTime);
+        return Mathf.Abs(((Vector2)point.transform.position - Body.position).magnitude);
+    }
+    public PointStateMachine GetClosestGoonToGoTo() {
+        Collider2D[] temp;
+        if ((temp = Physics2D.OverlapCircleAll(Body.position, Mathf.Infinity, GoonsLayerMask)).Length != 0) {
+            System.Array.Sort(temp, (a, b) => 
+                Vector2.Distance(Body.position, a.transform.position)
+                    .CompareTo(Vector2.Distance(Body.position, b.transform.position))
+            );
+            foreach (Collider2D point in temp) {
+                PointStateMachine otherPoint;
+                if (point.TryGetComponent(out otherPoint)) {
+                    if (otherPoint.GetCurrentState() == PointStateMachine.PointStates.Placed) {
+                        return otherPoint;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    public PointStateMachine GetRandomGoonToGoTo(float radius) {
+        Collider2D[] temp;
+        if ((temp = Physics2D.OverlapCircleAll(Body.position, radius, GoonsLayerMask)).Length != 0) {
+            foreach (Collider2D point in temp) {
+                PointStateMachine otherPoint;
+                if (point.TryGetComponent(out otherPoint)) {
+                    if (otherPoint.GetCurrentState() == PointStateMachine.PointStates.Placed) {
+                        return otherPoint.GetRandomConnectedPoint();
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -1642,8 +1642,8 @@ Transform:
   m_GameObject: {fileID: 1546695268}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.95, y: 4.1, z: -1.5232993}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.9, y: 3.34, z: -1.5232993}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1197720196}
@@ -1692,7 +1692,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 4124240867030020018, guid: 7614467bf8c020743b0f63b4d9984588, type: 3}
   m_Color: {r: 1, g: 0.6517962, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2060,11 +2060,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2131649070820503385, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.69
+      value: -5.73
       objectReference: {fileID: 0}
     - target: {fileID: 2131649070820503385, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.74
+      value: -0.74
       objectReference: {fileID: 0}
     - target: {fileID: 2131649070820503385, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2129,11 +2129,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2131649070820503385, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.44
+      value: -4.8
       objectReference: {fileID: 0}
     - target: {fileID: 2131649070820503385, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.75
+      value: 0.68
       objectReference: {fileID: 0}
     - target: {fileID: 2131649070820503385, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2175,6 +2175,10 @@ PrefabInstance:
       propertyPath: linkParent
       value: 
       objectReference: {fileID: 1694173119}
+    - target: {fileID: 5076064689980196952, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
+      propertyPath: flyingCheckRadius
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 7913361934700930244, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_Material
       value: 

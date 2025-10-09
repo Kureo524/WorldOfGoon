@@ -16,7 +16,7 @@ public class PointHoveredState : BaseState<PointStateMachine.PointStates> {
 
     public override void UpdateState() {
         if (!_context.IsMouseHover) {
-            NextState = PointStateMachine.PointStates.Idle;
+            NextState = PointStateMachine.PointStates.Sliding;
         }
 
         if (_context.IsClicked) {

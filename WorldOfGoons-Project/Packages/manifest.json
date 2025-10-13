@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.qiaozhilei.easy-text-effects": "file:C:/Users/FA506/Downloads/Easy-Text-Effects-for-Unity-main/Easy-Text-Effects-for-Unity-main",
     "com.unity.collab-proxy": "2.9.3",
     "com.unity.feature.2d": "2.0.1",
     "com.unity.ide.rider": "3.0.38",

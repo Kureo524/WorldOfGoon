@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.qiaozhilei.easy-text-effects": {
+      "version": "file:C:/Users/FA506/Downloads/Easy-Text-Effects-for-Unity-main/Easy-Text-Effects-for-Unity-main",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "10.2.1",
       "depth": 1,

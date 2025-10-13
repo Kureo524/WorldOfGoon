@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "UIMap",
+    "maps": [
+        {
+            "name": "UIMap",
+            "id": "cde7c0e2-527b-4777-8273-d6ed2cceb749",
+            "actions": [
+                {
+                    "name": "Return",
+                    "type": "Button",
+                    "id": "16741983-f554-4e2d-bdbf-48b5453bee15",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "0036609f-373a-4cce-be2c-259537fc3f53",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Return",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -15,6 +15,7 @@ public class CursorManager : MonoBehaviour {
 
     private void Awake() {
         Cursor.lockState = CursorLockMode.Confined;
+        DontDestroyOnLoad(gameObject);
         Instance = this;
         Cursor.visible = false;
         _currentCursor = Instantiate(

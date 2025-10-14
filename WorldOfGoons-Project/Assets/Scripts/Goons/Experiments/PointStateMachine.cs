@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
@@ -9,11 +10,12 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
         Dragged,
         Placed,
         Sliding,
+        Exiting,
     }
 
     private void Awake() {
         _context = new PointContext(this, goonsLayerMask, dragRadius, dragLerpSpeed, gravityEffect,
-            flyingCheckRadius, beeIdleSpeed, slidingSpeed,
+            flyingCheckRadius, beeIdleSpeed, slidingSpeed, exitSpeed,
             flyingTime, flyingMaxVelocity, flyingDecreasingSpeed,
             linkToInstantiate, linkParent);
         InitializeStates();
@@ -33,8 +35,11 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
     
     private PointContext _context;
 
+    public bool isAttachedToExit;
+
     public float beeIdleSpeed;
     public float slidingSpeed;
+    public float exitSpeed;
 
     [Header("Starting Values")] 
     public PointStates startingState;
@@ -93,6 +98,7 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
         States.Add(PointStates.Dragged, new PointDraggedState(PointStates.Dragged, _context));
         States.Add(PointStates.Placed, new PointPlacedState(PointStates.Placed, _context));
         States.Add(PointStates.Sliding, new PointSlidingState(PointStates.Sliding, _context));
+        States.Add(PointStates.Exiting, new PointExitState(PointStates.Exiting, _context));
         CurrentState = States[startingState];
     }
     #endregion
@@ -130,5 +136,10 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
 
     public PointStateMachine GetRandomConnectedPoint() {
         return _context.GetRandomConnectedPoint();
+    }
+
+    public void Exit(List<PointStateMachine> goonPath) {
+        _context.GoonPath = goonPath;
+        TransitionToState(PointStates.Exiting);
     }
 }

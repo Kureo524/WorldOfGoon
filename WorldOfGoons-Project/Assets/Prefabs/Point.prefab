@@ -102,8 +102,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5af28c23c09b7b049b2149551bc83d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAttachedToExit: 0
   beeIdleSpeed: 10
   slidingSpeed: 3
+  exitSpeed: 7
   startingState: 0
   dragLerpSpeed: 20
   gravityEffect: 9.8

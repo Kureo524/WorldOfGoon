@@ -13,7 +13,8 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
 
     private void Awake() {
         _context = new PointContext(this, goonsLayerMask, dragRadius, dragLerpSpeed, gravityEffect,
-            flyingCheckRadius, linkLayerMask, beeIdleSpeed, slidingSpeed,
+            flyingCheckRadius, beeIdleSpeed, slidingSpeed,
+            flyingTime, flyingMaxVelocity, flyingDecreasingSpeed,
             linkToInstantiate, linkParent);
         InitializeStates();
     }
@@ -46,7 +47,11 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
     public float dragRadius;
     public float flyingCheckRadius;
     public string goonsLayerMask;
-    public string linkLayerMask;
+    
+    [Header("Flying Values")] 
+    public float flyingTime;
+    public float flyingMaxVelocity;
+    public float flyingDecreasingSpeed;
     
     [Header("Link Values")] 
     public GameObject linkToInstantiate;
@@ -117,6 +122,10 @@ public class PointStateMachine : StateManager<PointStateMachine.PointStates> {
 
     public bool IsJointInPoint(PointStateMachine point) {
         return _context.IsJointInPoint(point);
+    }
+
+    public Link GetLink(PointStateMachine point) {
+        return _context.GetLink(point);
     }
 
     public PointStateMachine GetRandomConnectedPoint() {

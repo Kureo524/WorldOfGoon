@@ -103,14 +103,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beeIdleSpeed: 10
-  slidingSpeed: 5
+  slidingSpeed: 3
   startingState: 0
   dragLerpSpeed: 20
   gravityEffect: 9.8
   dragRadius: 3
   flyingCheckRadius: 0.6
   goonsLayerMask: GoonMachine
-  linkLayerMask: Link
+  flyingTime: 3
+  flyingMaxVelocity: 10
+  flyingDecreasingSpeed: 2
   linkToInstantiate: {fileID: 6456361624015734533, guid: 2d656c1bd2950ac468acde64b44a7111, type: 3}
   linkParent: {fileID: 0}
   linkColor: {r: 1, g: 0.6831587, b: 0, a: 1}

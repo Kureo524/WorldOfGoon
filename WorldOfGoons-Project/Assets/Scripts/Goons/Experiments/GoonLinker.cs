@@ -7,7 +7,6 @@ public class GoonLinker : MonoBehaviour {
     
     private void Start() {
         foreach (PointStateMachine psm in basePoints) {
-            Debug.Log("Initializing");
             psm.InitializeConnections();
         }
     }

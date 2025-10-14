@@ -16,6 +16,7 @@ public class PointIdleState : BaseState<PointStateMachine.PointStates> {
         }
         _context.Body.bodyType = RigidbodyType2D.Kinematic;
         _goonToGoTo = _context.GetClosestGoonToGoTo();
+        _context.ResetGoon = true;
     }
 
     public override void ExitState() {

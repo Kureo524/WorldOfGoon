@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16860026da54450394f6a38fe250e740, type: 3}
   m_Name: Entry_Fade
   m_EditorClassIdentifier: 
-  effectTag: 
+  effectTag: FadeEntry
   startCharIndex: 0
   charLength: 0
   animationType: 3
@@ -45,7 +45,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  colorType: 3
+  clampBetween0And1: 0
+  timeType: 0
+  colorType: 2
   startColor: {r: 0, g: 0.6669488, b: 1, a: 0}
   endColor: {r: 1, g: 1, b: 1, a: 1}
   gradient:

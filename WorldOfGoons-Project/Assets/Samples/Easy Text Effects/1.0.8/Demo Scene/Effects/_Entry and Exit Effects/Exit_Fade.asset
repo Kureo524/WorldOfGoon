@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16860026da54450394f6a38fe250e740, type: 3}
   m_Name: Exit_Fade
   m_EditorClassIdentifier: 
-  effectTag: 
+  effectTag: FadeExit
   startCharIndex: 0
   charLength: 0
   animationType: 3
@@ -46,7 +46,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   clampBetween0And1: 0
-  colorType: 4
+  timeType: 0
+  colorType: 2
   startColor: {r: 0, g: 0.6669488, b: 1, a: 0}
   endColor: {r: 0.8926192, g: 0.3915094, b: 1, a: 0}
   gradient:
@@ -81,5 +82,5 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   orientation: 0
   stride: 10
-  startAlpha: 0
-  endAlpha: 1
+  startAlpha: 1
+  endAlpha: 0

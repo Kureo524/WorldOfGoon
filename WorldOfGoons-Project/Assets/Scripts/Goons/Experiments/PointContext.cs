@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PointContext {
     public PointContext(PointStateMachine self, string goonsLayerMask, float draggedRadius, float draggedLerpSpeed,
-        float gravityEffect, float flyingRadiusDetection, string linkMask, float beeIdleSpeed, float slidingSpeed,
+        float gravityEffect, float flyingRadiusDetection, float beeIdleSpeed, float slidingSpeed,
+        float flyingTime, float flyingDesiredVelocity, float flyingDecreasingSpeed,
         GameObject linkToInstantiate, Transform linksParent) {
         Self = self;
         Body = Self.GetComponent<Rigidbody2D>(); 
@@ -16,10 +17,15 @@ public class PointContext {
         SlidingSpeed = slidingSpeed;
         GravityEffect = gravityEffect;
         FlyingRadiusDetection = flyingRadiusDetection;
-        LinkMask = LayerMask.GetMask(linkMask);
+        
+        FlyingTime = flyingTime;
+        FlyingDesiredVelocity = flyingDesiredVelocity;
+        FlyingDecreasingSpeed = flyingDecreasingSpeed;
         
         _linkToInstantiate = linkToInstantiate;
         _linksParent = linksParent;
+
+        ResetGoon = true;
     }
 
     #region Random Variables
@@ -33,12 +39,16 @@ public class PointContext {
     public float GravityEffect;
     public Vector2 MousePosition;
     
-    public int LinkMask;
     public float FlyingRadiusDetection;
 
     public bool IsMouseHover;
     public bool IsClicked;
     public bool ResetGoon;
+    
+    // Flying variables
+    public float FlyingTime;
+    public float FlyingDesiredVelocity;
+    public float FlyingDecreasingSpeed;
     
     #endregion
 
@@ -92,12 +102,18 @@ public class PointContext {
             if (temp == index) {
                 return link;
             }
+            index++;
         }
         return null;
     }
     public int GetLinksAmount() {
         return _links.Count;
     }
+
+    public Link GetLink(PointStateMachine point) {
+        return _links[point];
+    }
+    
     public void DestroyTempLink(PointStateMachine connectedPoint) {
         Object.Destroy(_links[connectedPoint].gameObject);
     }
@@ -186,6 +202,43 @@ public class PointContext {
         Body.position = Vector2.MoveTowards(Body.transform.position, point.transform.position, speed * Time.deltaTime);
         return Mathf.Abs(((Vector2)point.transform.position - Body.position).magnitude);
     }
+
+    private float _posOnLink = 0;
+    private Link _currentLink;
+    private bool _reversed;
+    public float SlideOnLink(PointStateMachine point, float speed) {
+        if (!_currentLink) return -1;
+        _posOnLink = Mathf.MoveTowards(_posOnLink, 1, speed * Time.deltaTime);
+        Body.position = Vector2.MoveTowards(Body.position, GetPositionFromFraction(_posOnLink, point.transform.position, _currentLink), speed * Time.deltaTime);
+        return Mathf.Abs(((Vector2)point.transform.position - Body.position).magnitude);
+    }
+    public Vector2 GetPositionFromFraction(float fraction, Vector2 endPointPos, Link currentLink) {
+        Vector2 startPoint = currentLink.linkRenderer.GetPosition(_reversed ? currentLink.linkRenderer.positionCount - 1 : 0);
+        Vector2 endPoint   = currentLink.linkRenderer.GetPosition(_reversed ? 0 : currentLink.linkRenderer.positionCount - 1);
+        
+        Vector2 fractionVector = (endPoint - startPoint) * fraction;
+        return startPoint + fractionVector;
+    }
+    public PointStateMachine GetRandomGoonToGoTo(float radius) {
+        Collider2D[] temp;
+        _posOnLink = 0;
+        if ((temp = Physics2D.OverlapCircleAll(Body.position, radius, GoonsLayerMask)).Length != 0) {
+            foreach (Collider2D point in temp) {
+                PointStateMachine otherPoint;
+                if (point.TryGetComponent(out otherPoint)) {
+                    if (otherPoint.GetCurrentState() == PointStateMachine.PointStates.Placed) {
+                        PointStateMachine pointAssigned = otherPoint.GetRandomConnectedPoint();
+                        _currentLink = otherPoint.GetLink(pointAssigned);
+                        _reversed = (pointAssigned.transform.position - _currentLink.linkRenderer.GetPosition(0)).sqrMagnitude <
+                                    (pointAssigned.transform.position - _currentLink.linkRenderer.GetPosition(_currentLink.linkRenderer.positionCount - 1)).sqrMagnitude;
+                        return pointAssigned;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
     public PointStateMachine GetClosestGoonToGoTo() {
         Collider2D[] temp;
         if ((temp = Physics2D.OverlapCircleAll(Body.position, Mathf.Infinity, GoonsLayerMask)).Length != 0) {
@@ -198,21 +251,6 @@ public class PointContext {
                 if (point.TryGetComponent(out otherPoint)) {
                     if (otherPoint.GetCurrentState() == PointStateMachine.PointStates.Placed) {
                         return otherPoint;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-    
-    public PointStateMachine GetRandomGoonToGoTo(float radius) {
-        Collider2D[] temp;
-        if ((temp = Physics2D.OverlapCircleAll(Body.position, radius, GoonsLayerMask)).Length != 0) {
-            foreach (Collider2D point in temp) {
-                PointStateMachine otherPoint;
-                if (point.TryGetComponent(out otherPoint)) {
-                    if (otherPoint.GetCurrentState() == PointStateMachine.PointStates.Placed) {
-                        return otherPoint.GetRandomConnectedPoint();
                     }
                 }
             }

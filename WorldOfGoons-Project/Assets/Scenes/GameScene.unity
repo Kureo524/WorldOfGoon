@@ -2175,10 +2175,6 @@ PrefabInstance:
       propertyPath: linkParent
       value: 
       objectReference: {fileID: 1694173119}
-    - target: {fileID: 5076064689980196952, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
-      propertyPath: flyingCheckRadius
-      value: 0.6
-      objectReference: {fileID: 0}
     - target: {fileID: 7913361934700930244, guid: 77a9c06bad6ad7a4c94a4815686da98f, type: 3}
       propertyPath: m_Material
       value: 

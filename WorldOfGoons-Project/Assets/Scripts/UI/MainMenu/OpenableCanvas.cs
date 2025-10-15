@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class OpenableCanvas :  MonoBehaviour {
@@ -17,5 +18,9 @@ public class OpenableCanvas :  MonoBehaviour {
     
     public void OnAnimationFinished() {
         onAnimationFinished.Invoke(this);
+    }
+
+    public void OpenScene(string sceneName) {
+        SceneManager.LoadScene(sceneName);
     }
 }

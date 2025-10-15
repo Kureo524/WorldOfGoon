@@ -1,3 +1,0 @@
-Cercles magiques, morceaux de cercle avec des propriétés élémentaires.
-
-Jeu de kapla dans lequel il y a une épreuve tous les mètres de hauteur pour tester la solidité de la construction.

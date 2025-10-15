@@ -7,6 +7,10 @@ public class LevelEnd : MonoBehaviour {
 
     private float _timer;
     public float _timeToEnd;
+
+    private PointStateMachine _connectedPoint;
+
+    public OpenableCanvas endMenu;
     
     public void Update() {
         CheckForGoon();
@@ -14,8 +18,9 @@ public class LevelEnd : MonoBehaviour {
     }
 
     private void CheckTimer() {
-        if (_timer >= _timeToEnd) {
-            Debug.Log("Win");
+        if (_timer >= _timeToEnd && _connectedPoint) {
+            _connectedPoint.isAttachedToExit = true;
+            EndLevel();
         }
     }
 
@@ -25,6 +30,7 @@ public class LevelEnd : MonoBehaviour {
             goonCollider.TryGetComponent(out PointStateMachine point);
             if (point.GetCurrentState() == PointStateMachine.PointStates.Placed) {
                 _timer += Time.deltaTime;
+                _connectedPoint = point;
             } else {
                 ResetEnd();
             }
@@ -35,6 +41,12 @@ public class LevelEnd : MonoBehaviour {
 
     private void ResetEnd() {
         _timer = 0;
+        _connectedPoint = null;
+    }
+
+    private void EndLevel() {
+        endMenu.OpenCanvas();
+        Destroy(gameObject);
     }
 
     public void OnDrawGizmos() {

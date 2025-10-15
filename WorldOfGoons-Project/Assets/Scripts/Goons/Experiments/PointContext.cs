@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PointContext {
     public PointContext(PointStateMachine self, string goonsLayerMask, float draggedRadius, float draggedLerpSpeed,
-        float gravityEffect, float flyingRadiusDetection, float beeIdleSpeed, float slidingSpeed,
+        float gravityEffect, float flyingRadiusDetection, float beeIdleSpeed, float slidingSpeed, float exitSpeed,
         float flyingTime, float flyingDesiredVelocity, float flyingDecreasingSpeed,
         GameObject linkToInstantiate, Transform linksParent) {
         Self = self;
@@ -15,6 +15,7 @@ public class PointContext {
         DraggedLerpSpeed = draggedLerpSpeed;
         BeeIdleSpeed = beeIdleSpeed;
         SlidingSpeed = slidingSpeed;
+        ExitSpeed = exitSpeed;
         GravityEffect = gravityEffect;
         FlyingRadiusDetection = flyingRadiusDetection;
         
@@ -36,6 +37,7 @@ public class PointContext {
     public float DraggedLerpSpeed;
     public float BeeIdleSpeed;
     public float SlidingSpeed;
+    public float ExitSpeed;
     public float GravityEffect;
     public Vector2 MousePosition;
     
@@ -257,4 +259,6 @@ public class PointContext {
         }
         return null;
     }
+
+    public List<PointStateMachine> GoonPath;
 }
